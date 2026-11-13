@@ -17,6 +17,10 @@ import {
 } from 'lucide-react';
 
 export const AdminLoginForm = ({ onLoginSuccess }) => {
+  const isProduction = 
+    process.env.PRODUCTION === 'true' || 
+    process.env.NEXT_PUBLIC_PRODUCTION === 'true';
+
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +28,7 @@ export const AdminLoginForm = ({ onLoginSuccess }) => {
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleQuickFill = () => {
+    if (isProduction) return;
     setIdentifier('admin@educashback.com');
     setPassword('admin123');
     setErrorMsg('');
@@ -121,7 +126,7 @@ export const AdminLoginForm = ({ onLoginSuccess }) => {
                 type="text"
                 required
                 autoComplete="username"
-                placeholder="admin@educashback.com or admin"
+                placeholder={isProduction ? "Enter username or email" : "admin@educashback.com or admin"}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 rounded-xl py-3 pl-10 pr-3 text-sm text-white placeholder-slate-500 outline-none transition-colors"
@@ -174,35 +179,37 @@ export const AdminLoginForm = ({ onLoginSuccess }) => {
           </button>
         </form>
 
-        {/* Quick Seed helper box */}
-        <div className="pt-4 border-t border-slate-800 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-amber-300" />
-              Seeded Admin Credentials:
-            </span>
-            <button
-              type="button"
-              onClick={handleQuickFill}
-              className="text-[11px] font-bold text-emerald-400 hover:underline hover:text-emerald-300 cursor-pointer"
-            >
-              Click to Auto-Fill
-            </button>
-          </div>
-          <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono space-y-1 text-slate-300">
-            <div className="flex justify-between">
-              <span className="text-slate-500">Email:</span>
-              <span className="text-emerald-400">admin@educashback.com</span>
+        {/* Quick Seed helper box (hidden in production) */}
+        {!isProduction && (
+          <div className="pt-4 border-t border-slate-800 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-amber-300" />
+                Seeded Admin Credentials:
+              </span>
+              <button
+                type="button"
+                onClick={handleQuickFill}
+                className="text-[11px] font-bold text-emerald-400 hover:underline hover:text-emerald-300 cursor-pointer"
+              >
+                Click to Auto-Fill
+              </button>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Password:</span>
-              <span className="text-amber-300 font-bold">admin123</span>
+            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono space-y-1 text-slate-300">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Email:</span>
+                <span className="text-emerald-400">admin@educashback.com</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Password:</span>
+                <span className="text-amber-300 font-bold">admin123</span>
+              </div>
             </div>
+            <p className="text-[10px] text-slate-500 text-center">
+              🔐 Session authenticated with secure HTTP-only cookie tokens
+            </p>
           </div>
-          <p className="text-[10px] text-slate-500 text-center">
-            🔐 Session authenticated with secure HTTP-only cookie tokens
-          </p>
-        </div>
+        )}
 
       </div>
 
